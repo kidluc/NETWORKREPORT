@@ -10,14 +10,14 @@ DHCP sẽ tự động quản lý các địa chỉ IP, tự động gán các I
 Khi một máy tính khởi động và không có địa chỉ IP, nó sẽ broadcast một giao thức bootstrap ***bootstrap protocol*** nhằm tìm đến DHCP server có tên gọi là DHCP discover.
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-06%2008-41-35.png)
 DHCP sau khi nhận được DHCP discover, DHCP sẽ trả về một DHCP offer có chứa IP và các thông tin cấu hình tự động từ trong ***pool*** của mình về máy tính.
-![](imgs/20170906-084410.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-06%2008-43-45.png)
 Nếu máy tính đồng ý, máy tính sẽ gửi một thông điệp là DHCP request để xác nhận việc sử dụng IP và các thông tin trong gói DHCP offer từ DHCP server.
-![](imgs/20170906-084425.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-06%2008-44-21.png)
 Cuối cùng, DHCP sẽ gửi một thông điệp DHCP ACK để xác nhận điều đó. Điều này có nghĩa là máy tính và các DHCP server khác sẽ xác nhận là IP đã được sử dụng.
-![](imgs/20170906-084442.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-06%2008-44-37.png)
 #### 1.4 Mô hình lab
 
-![](imgs/20170907-083448.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2008-33-59.png)
 
 #### 1.5 Cấu hình các phần mềm DHCP server.
 Cấu hình phần mềm DHCP sau đây được sử dụng trên bản ubuntu 16.04.
@@ -127,7 +127,7 @@ Mỗi khi hosts gửi một thông tin nào đó cho server, GRE sẽ đóng gó
 Khi có gói tin được gửi đi, GRE thêm vào tối thiểu 24 byte vào gói tin, trong đó bao gồm 20-byte IP header mới, 4 byte còn lại là GRE header. GRE có thể tùy chọn thêm vào 12 byte mở rộng để cung cấp tính năng tin cậy như: checksum, key chứng thực, sequence number. Sau đó, nó sẽ gửi gói tin đi qua tunnel thông qua Internet và Public IP đã được định tuyến.
 #### 4.4 Mô hình lab
 
-![](imgs/20170907-105815.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2010-58-08.png)
 #### 4.5 Cấu hình các phần mềm.
 Bản cấu hình này sử dụng trên Ubuntu 16.04.
 
@@ -160,7 +160,8 @@ sudo ip link set gre1 up
 ip addr add 10.10.10.2/24 dev gre1
 ```
 Sau khi cấu hình xong ta có thể kiểm tra bằng cách sử dụng lệnh ping đến IP public mà ta đã khai báo ở trên
-![](imgs/20170907-104603.png)
+![](![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2010-46-00.png)
+)
 
 ## 5. Giao thức VXLAN
 #### 5.1 Lý Thuyết
