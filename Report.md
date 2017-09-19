@@ -100,6 +100,17 @@ DNS có khả năng truy vấn các DNS server khác để có được một c�
 
 DNS server có khả năng ghi nhớ lại những tên vừa phân giải. Để dùng cho những yêu cầu phân giải lần sau. Số lượng những tên phân giải được lưu lại tùy thuộc vào quy mô của từng DNS.
 #### 2.3 Các bước hoạt động
+– Là một máy tính có nhiệm vụ là DNS Server, chạy dịch vụ DNS service. – DNS Server là một cơ sở dữ liệu chứa các thông tin về vị trí của các DNS domain và phân giải các truy vấn xuất phát từ các Client. – DNS Server có thể cung cấp các thông tin do Client yêu cầu, và chuyển đến một DNS Server khác để nhờ phân giải hộ trong trường hợp nó không thể trả lời được các truy vấn về những tên miền không thuộc quyền quản lý và cũng luôn sẵn sàng trả lời các máy chủ khác về các tên miền mà nó quản lý. DNS Server lưu thông tin của Zone, truy vấn và trả kết quả cho DNS Client. – Máy chủ quản lý DNS cấp cao nhất là Root Server do tổ chức ICANN quản lý:
+
+Là Server quản lý toàn bộ cấu trúc của hệ thống tên miền
+Root Server không chứa dữ liệu thông tin về cấu trúc hệ thống DNS mà nó chỉ chuyển quyền (delegate) quản lý xuống cho các Server cấp thấp hơn và do đó Root Server có khả năng định đường đến của một domain tại bất kì đâu trên mạng
+Các loại truy vấn giữa các DNS Server Trước khi đi tìm hiểu về các loại DNS Server ta sẽ tìm hiểu về các loại truy vấn từ client tới DNS Server và giữa các DNS Server với nhau, có hai loại Truy vấn đó là Recursion Query và **Iteration Query **:
+
+– Khi DNS Server không phân giải được host name, nó sẽ chuyển đến một DNS Server khác (forwarded) trong mạng. Quá trình này được gọi là kiểu yêu cầu Recursive ( phân giải đệ quy).
+
+– Nếu Recursion bị disable thì nó sẽ sử dụng Iterative (tương tác), tức là nó sẽ gởi yêu cầu phân giải lại tên của host name. Khi có một truy vấn từ Client, trước hết nó sẽ tìm trong cơ sở dữ liệu của chính nó, nếu không có, nó sẽ cho biết một máy chủ khác mà từ đó có thể tìm thấy kết quả truy vấn.
+
+– Nói cách khác, Recursion chỉ query trong local, còn Iterative có thể query ra ngoài internet.
 #### 2.4 Mô hình lab
 #### 2.5 Cấu hình các phần mềm DNS server.
 
@@ -165,7 +176,9 @@ Sau khi cấu hình xong ta có thể kiểm tra bằng cách sử dụng lệnh
 
 ## 5. Giao thức VXLAN
 #### 5.1 Lý Thuyết
-VXLAN (Virtual Extension LAN )
+VXLAN (Virtual Extension LAN ) cung cấp các dịch vụ kết nối các Ethernet end systems và cung cấp phương tiện mở rộng mạng LAN qua mạng L3. VXLAN ID (VXLAN Network Identifier hoặc VNI) là 1 chuỗi 24-bits so với 12 bits của của VLAN ID. Do đó cung cấp hơn 16 triệu ID duy nhất.
+
+VXLAN Tunnel End Point (VTEP) dùng để kết nối switch (hiện tại là virtual switch) đến mạng IP. VTEP nằm trong hypervisor chứa VMs. Chức năng của VTEP là đóng gói VM traffic trong IP header để gửi qua mạng IP.
 #### 5.2 Nguyên Tắc Hoạt động
 #### 5.3 Các bước hoạt động
 #### 5.4 Mô hình lab
