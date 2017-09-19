@@ -8,7 +8,7 @@ DHCP là giao thức cấu hình máy chủ tự động. Giao thức này cho p
 DHCP sẽ tự động quản lý các địa chỉ IP, tự động gán các IP chưa được sử dụng từ một ***pool*** các IP mà DHCP có sẵn đến các thiết bị kết nối tới mạng theo một khoảng thời gian .
 #### 1.3 Các bước hoạt động
 Khi một máy tính khởi động và không có địa chỉ IP, nó sẽ broadcast một giao thức bootstrap ***bootstrap protocol*** nhằm tìm đến DHCP server có tên gọi là DHCP discover.
-![](imgs/20170906-084209.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-06%2008-41-35.png)
 DHCP sau khi nhận được DHCP discover, DHCP sẽ trả về một DHCP offer có chứa IP và các thông tin cấu hình tự động từ trong ***pool*** của mình về máy tính.
 ![](imgs/20170906-084410.png)
 Nếu máy tính đồng ý, máy tính sẽ gửi một thông điệp là DHCP request để xác nhận việc sử dụng IP và các thông tin trong gói DHCP offer từ DHCP server.
