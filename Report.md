@@ -160,8 +160,8 @@ sudo ip link set gre1 up
 ip addr add 10.10.10.2/24 dev gre1
 ```
 Sau khi cấu hình xong ta có thể kiểm tra bằng cách sử dụng lệnh ping đến IP public mà ta đã khai báo ở trên
-![](![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2010-46-00.png)
-)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2010-46-00.png)
+
 
 ## 5. Giao thức VXLAN
 #### 5.1 Lý Thuyết
