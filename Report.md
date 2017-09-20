@@ -132,7 +132,7 @@ Truy vấn DNS bình thường.
 – Một số DNS Server nội bộ không cho truy cập đến Internet vì mục đích bảo mật, nên DNS Server không thể truy vấn đến Root Server bằng Root Hint, vì thế ta phải sử dụng Forwarder, để chuyển các truy vấn của Client đến DNS Server được chỉ định.
 
 #### 2.4 Mô hình lab
-![]()
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-20%2011-12-37.png)
 #### 2.5 Cấu hình các phần mềm DNS server.
 Cấu hình DNS Server Bind9.
 
@@ -218,7 +218,7 @@ Sau khi tạo xong ta restart lại bind9
 service bind9 restart
 ```
 Kiểm tra xem bind9 đã load các zones chưa, nếu load như hình dưới là các zones đã được load và DNS Server đã chay
-![]()
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-20%2011-33-35.png)
 
 Tại máy Client
 Cấu hình file **/etc/resolv.conf**
@@ -228,8 +228,8 @@ nameserver 45.124.95.108
 search  test.duylk.com
 ```
 Sau đó ta có thể kiểm tra DNS qua lệnh nslookup hoặc lệnh dig
-![]()
-![]()
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-20%2011-39-18.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-20%2011-39-11.png)
 
 
 ## 3. Giao thức ARP
