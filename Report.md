@@ -100,19 +100,137 @@ DNS có khả năng truy vấn các DNS server khác để có được một c�
 
 DNS server có khả năng ghi nhớ lại những tên vừa phân giải. Để dùng cho những yêu cầu phân giải lần sau. Số lượng những tên phân giải được lưu lại tùy thuộc vào quy mô của từng DNS.
 #### 2.3 Các bước hoạt động
-– Là một máy tính có nhiệm vụ là DNS Server, chạy dịch vụ DNS service. – DNS Server là một cơ sở dữ liệu chứa các thông tin về vị trí của các DNS domain và phân giải các truy vấn xuất phát từ các Client. – DNS Server có thể cung cấp các thông tin do Client yêu cầu, và chuyển đến một DNS Server khác để nhờ phân giải hộ trong trường hợp nó không thể trả lời được các truy vấn về những tên miền không thuộc quyền quản lý và cũng luôn sẵn sàng trả lời các máy chủ khác về các tên miền mà nó quản lý. DNS Server lưu thông tin của Zone, truy vấn và trả kết quả cho DNS Client. – Máy chủ quản lý DNS cấp cao nhất là Root Server do tổ chức ICANN quản lý:
+– Là một máy tính có nhiệm vụ là DNS Server, chạy dịch vụ DNS service.
+– DNS Server là một cơ sở dữ liệu chứa các thông tin về vị trí của các DNS domain và phân giải các truy vấn xuất phát từ các Client.
+– DNS Server có thể cung cấp các thông tin do Client yêu cầu, và chuyển đến một DNS Server khác để nhờ phân giải hộ trong trường hợp nó không thể trả lời được các truy vấn về những tên miền không thuộc quyền quản lý và cũng luôn sẵn sàng trả lời các máy chủ khác về các tên miền mà nó quản lý. DNS Server lưu thông tin của Zone, truy vấn và trả kết quả cho DNS Client.
+– Máy chủ quản lý DNS cấp cao nhất là Root Server do tổ chức ICANN quản lý:
 
 Là Server quản lý toàn bộ cấu trúc của hệ thống tên miền
 Root Server không chứa dữ liệu thông tin về cấu trúc hệ thống DNS mà nó chỉ chuyển quyền (delegate) quản lý xuống cho các Server cấp thấp hơn và do đó Root Server có khả năng định đường đến của một domain tại bất kì đâu trên mạng
-Các loại truy vấn giữa các DNS Server Trước khi đi tìm hiểu về các loại DNS Server ta sẽ tìm hiểu về các loại truy vấn từ client tới DNS Server và giữa các DNS Server với nhau, có hai loại Truy vấn đó là Recursion Query và **Iteration Query **:
 
-– Khi DNS Server không phân giải được host name, nó sẽ chuyển đến một DNS Server khác (forwarded) trong mạng. Quá trình này được gọi là kiểu yêu cầu Recursive ( phân giải đệ quy).
+DNS có khả năng truy vấn các DNS server khác để có một cái tên đã được phân giải. DNS server của mỗi tên miền thường có 2 việc khác biệt. 
+Thứ nhất chịu trách nhiệm phân giải tên từ các máy bên trong miền về các địa chỉ Internet, cả bên trong lẫn bên ngoài miền nó quản lý. 
+Thứ hai, chúng trả lời các DNS server bên ngoài đang cố gắng phân giải những tên miền nó quản lý. DNS server có khả năng ghi nhớ lại những tên vừa phân giải. Để dùng cho những yêu cầu phân giải lần sau. Số lượng những tên phân giải được lưu lại tùy thuộc vào quy mô của từng DNS.
 
-– Nếu Recursion bị disable thì nó sẽ sử dụng Iterative (tương tác), tức là nó sẽ gởi yêu cầu phân giải lại tên của host name. Khi có một truy vấn từ Client, trước hết nó sẽ tìm trong cơ sở dữ liệu của chính nó, nếu không có, nó sẽ cho biết một máy chủ khác mà từ đó có thể tìm thấy kết quả truy vấn.
+DNS server là một cơ sở dữ liệu chứa các thông tin về vị trị của các DNS domain và phân giải các truy vấn xuất phát từ client.
 
-– Nói cách khác, Recursion chỉ query trong local, còn Iterative có thể query ra ngoài internet.
+DNS server lưu thông tin của Zone, truy vấn và trả kết quả cho DNS client, chạy DNS service.
+
+1. 
+Truy vấn DNS bình thường.
+
+-Quá trình máy tính cá nhân (gọi tắt là A) truy vấn tới địa chỉ www.vccloud.vn. Lúc này máy tính đang trỏ DNS tới DNS google 8.8.8.8 quá trình sẽ diễn ra như sau:
+-Đầu tiên A gửi request hỏi DNS Server google hỏi thông tin về www.vccloud.vn, server DNS google sẽ gửi truy vấn đến server top level domain
+-Top level domain lưu trữ thông tin về mọi tên miền trên mạng. Do đó nó sẽ gửi lại cho server DNS google địa chỉ IP của server quản lý tên miền vn (gọi tắt là server vn).
+-Khi có địa chỉ IP của server vn thì lúc này server DNS google sẽ hỏi server vn về vccloud.vn server vn quản lý toàn bộ những trang web có domain vn, chúng sẽ gửi địa chỉ ip của server vccloud.vn cho server google.
+-Sau đó server DNS google lại tiếp tục gửi truy vấn đến server vccloud.vn để hỏi thông tin về server quản lý dịch vụ www của vccloud.vn.
+-Server vccloud.vn khi nhận được truy vấn sẽ gửi lại IP của server www.vccloud.vn cho server DNS google
+-Và cuối cùng server DNS google sẽ gửi lại địa chỉ địa chỉ IP của server www.vccloud.vn cho A và bây giờ A có thể kết nối trực tiếp tới www.vccloud.vn.
+
+2. Truy vấn DNS Forwarder 
+
+– Một số DNS Server nội bộ không cho truy cập đến Internet vì mục đích bảo mật, nên DNS Server không thể truy vấn đến Root Server bằng Root Hint, vì thế ta phải sử dụng Forwarder, để chuyển các truy vấn của Client đến DNS Server được chỉ định.
+
 #### 2.4 Mô hình lab
+![]()
 #### 2.5 Cấu hình các phần mềm DNS server.
+Cấu hình DNS Server Bind9.
+
+Tại Server:
+Cài đặt bind9 và bind9utils:
+```
+apt install bind9 bind9utils bind9-docs
+```
+
+Cấu hình file **/etc/bind/named.conf.options**
+Thêm IP trusted để truy vấn đến DNS Server
+```
+acl "trusted" {
+        45.124.95.108;
+};
+```
+Cấu hình tiếp phần options
+```
+options {
+        directory "/var/cache/bind";
+
+        dnssec-validation auto;
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+
+        recursion yes;                 # Cho phép truy vấn ngược
+        allow-recursion { trusted; };  # Cho phép truy vấn từ trusted
+        listen-on { 45.124.95.108; };   # Chỉ định IP DNS listen
+        allow-transfer { none; };      # Tắt chức năng transfer
+
+        forwarders {
+                8.8.8.8;
+                8.8.4.4;
+        };
+};
+```
+
+Cấu hình tiếp file **/etc/bind/named.conf.local**
+
+Thêm zone có chứa Domain name để truy vấn.
+```
+zone "duylk.com" {	# Bind domain name duylk.com
+        type master;
+        file "/etc/bind/zones/db.duylk.com";	# Chỉ định database cho domain name ở trên
+        allow-transfer { 45.124.95.108; };
+};
+```
+
+Tạo một folder zone để chứa các database cho zone
+```
+mkdir /etc/bind/zones
+```
+
+Tiếp đó ta tạo một file database cho domain name ta đã khai báo ở trên
+
+```
+vim /etc/bind/zones/db.duylk.com
+```
+
+Bên trong file ta cấu hình như sau
+
+```
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     test.duylk.com. root.duylk.com. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+; name servers - NS records
+     IN      NS      test.duylk.com.
+; name servers - A records
+test.duylk.com.          IN      A       45.124.95.108
+```
+
+Sau khi tạo xong ta restart lại bind9
+```
+service bind9 restart
+```
+Kiểm tra xem bind9 đã load các zones chưa, nếu load như hình dưới là các zones đã được load và DNS Server đã chay
+![]()
+
+Tại máy Client
+Cấu hình file **/etc/resolv.conf**
+Ta thêm 2 dòng vào file
+```
+nameserver 45.124.95.108
+search  test.duylk.com
+```
+Sau đó ta có thể kiểm tra DNS qua lệnh nslookup hoặc lệnh dig
+![]()
+![]()
+
 
 ## 3. Giao thức ARP
 #### 3.1 Lý Thuyết
