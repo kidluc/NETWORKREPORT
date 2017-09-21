@@ -259,6 +259,7 @@ Khi có gói tin được gửi đi, GRE thêm vào tối thiểu 24 byte vào g
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2010-58-08.png)
 #### 4.5 Cấu hình các phần mềm.
 Bản cấu hình này sử dụng trên Ubuntu 16.04.
+**Cấu hình GRE Tunnel**
 
 Với các máy muốn sử dụng GRE, đâu tiên ta cần phải khởi động GRE bằng câu lệnh:      ```modprobe ip_gre```
 Có thể kiểm tra bằng câu lệnh ```ip tunnel show```
@@ -291,6 +292,54 @@ ip addr add 10.10.10.2/24 dev gre1
 Sau khi cấu hình xong ta có thể kiểm tra bằng cách sử dụng lệnh ping đến IP public mà ta đã khai báo ở trên
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2010-46-00.png)
 
+Mô hình lab
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-54-13.png)
+Đầu tiên ta cấu hình GRE nhử ở trên với IP là 20.0.0.1(COM-1) và 20.0.0.2(COM-2) và interface là gre1 ở cả 2 router.
+Mở cở chế forward trên 2 router **echo 1 > /proc/sys/net/ipv4/ip_forward**
+
+Cấu hình đinh tuyến trên các thiết bị theo thứ tự
+COM-1
+- Cấu hình định tuyến vào IP GRE TUNNEL và IP LAN của router 2
+```ip router add 20.0.0.0/24 via 172.16.137.129 dev ens37```
+```ip route add 192.168.42.0/24 via 172.16.137.129 dev ens37```
+
+Kết qua ta có bảng định tuyến sau
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-43-52.png)
+
+COM-2
+- Cấu hình định tuyến vào IP GRE TUNNEL và IP LAN của router 1
+```
+ip router add 20.0.0.0/24 via 192.168.42.128 dev ens33
+ip route add 172.16.137.0/24 via 192.168.42.128 dev ens33
+```
+Kết qua ta có bảng định tuyến sau
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-45-07.png)
+
+ROUTER-1
+- Cấu hình định tuyến vào IP LAN của ROUTER-2
+```
+ip route add 192.168.42.0/24 via 20.0.0.2 dev gre1
+```
+Bảng định tuyến của router-1
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-44-04.png)
+
+ROUTER-2
+
+- Cấu hình định tuyến vào IP LAN của ROUTER-1
+```
+ip route add 172.16.137.0/24 via 20.0.0.1 dev gre1
+```
+Bảng định tuyến của router-2
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-44-11.png)
+
+
+Sau khi cài đặt, ta có thể ping giữa COM-1 và COM-2 hoặc SSH.
+PING COM-1 và COM-2
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-42-28.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2016-10-09.png)
+
+SSH
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2016-22-03.png)
 
 ## 5. Giao thức VXLAN
 #### 5.1 Lý Thuyết
