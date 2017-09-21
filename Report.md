@@ -338,7 +338,7 @@ PING COM-1 và COM-2
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-42-28.png)
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2016-10-09.png)
 
-TCPDUMP trên 2 router khi ping qua GRE Tunnel
+TCPDUMP trên 2 router SSH qua GRE Tunnel
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2016-57-08.png)
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2016-57-29.png)
 
