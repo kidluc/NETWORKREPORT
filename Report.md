@@ -293,9 +293,9 @@ Sau khi cấu hình xong ta có thể kiểm tra bằng cách sử dụng lệnh
 ![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-07%2010-46-00.png)
 
 Mô hình lab
-![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-21%2015-54-13.png)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2007-47-30.png)
 Đầu tiên ta cấu hình GRE nhử ở trên với IP là 20.0.0.1(COM-1) và 20.0.0.2(COM-2) và interface là gre1 ở cả 2 router.
-Mở cở chế forward trên 2 router **echo 1 > /proc/sys/net/ipv4/ip_forward**
+Mở cơ chế forward trên 2 router **echo 1 > /proc/sys/net/ipv4/ip_forward**
 
 Cấu hình đinh tuyến trên các thiết bị theo thứ tự
 COM-1
@@ -347,13 +347,79 @@ SSH
 
 ## 5. Giao thức VXLAN
 #### 5.1 Lý Thuyết
-VXLAN (Virtual Extension LAN ) cung cấp các dịch vụ kết nối các Ethernet end systems và cung cấp phương tiện mở rộng mạng LAN qua mạng L3. VXLAN ID (VXLAN Network Identifier hoặc VNI) là 1 chuỗi 24-bits so với 12 bits của của VLAN ID. Do đó cung cấp hơn 16 triệu ID duy nhất.
+VXLAN (Virtual Extension LAN ) kế thừa lại các đặc tính của VLAN cũng như cung cấp các dịch vụ kết nối các Ethernet end systems và cung cấp phương tiện mở rộng mạng LAN qua mạng L3. VXLAN ID (VXLAN Network Identifier hoặc VNI) là 1 chuỗi 24-bits so với 12 bits của của VLAN ID. Do đó cung cấp hơn 16 triệu ID duy nhất.
 
 VXLAN Tunnel End Point (VTEP) dùng để kết nối switch (hiện tại là virtual switch) đến mạng IP. VTEP nằm trong hypervisor chứa VMs. Chức năng của VTEP là đóng gói VM traffic trong IP header để gửi qua mạng IP.
 #### 5.2 Nguyên Tắc Hoạt động
-#### 5.3 Các bước hoạt động
-#### 5.4 Mô hình lab
-#### 5.5 Cấu hình các phần mềm.
+VXLANs sử dụng giao thức Internet (cả unicast và multicast) làm phương tiện truyền tin. Cũng giống như GRE tunnel, VXLAN kết nối hai mạng riêng biệt bằng cách sử dụng chung một IP subnet.
+#### 5.3 Mô hình lab
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2007-47-30.png)
+#### 5.4 Cấu hình các thiết bị.
+Đầu tiên ta cần tạo VXLAN trên 2 Router để kết nối 2 mạng LAN của 2 ROUTER với nhau.
+Mở cơ chế forward trên 2 router **echo 1 > /proc/sys/net/ipv4/ip_forward** trên cả 2 router.
+
+ROUTER-1
+Ta tạo interface vxlan0 với IP là 30.0.0.1
+```
+ip link add vxlan0 type vxlan id 100 dev ens33 local 10.0.0.128 remote 10.0.0.129 ttl 255 dstport 4789
+ip link set vxlan0 up
+ip addr add 30.0.0.1/24 dev vxlan0
+```
+Kiểm tra vxlan đã hoạt động chưa.
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2007-51-09.png)
+
+Cấu hình bảng định tuyến của router 1 để kết nối với COM-2 qua VXLAN.
+```
+ip route add 192.168.42.0/24 via 30.0.0.2 dev vxlan0
+```
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2007-54-25.png)
+
+ROUTER-2
+```
+ip link add vxlan0 type vxlan id 100 dev ens33 local 10.0.0.129 remote 10.0.0.128 ttl 255 dstport 4789
+ip link set vxlan0 up
+ip addr add 30.0.0.2/24 dev vxlan0
+```
+Kiểm tra vxlan đã hoạt động chưa.
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2007-51-33.png)
+
+Cấu hình bảng định tuyến của router 2 để kết nối với COM-1 qua VXLAN.
+```
+ip route add 172.16.137.0/24 via 30.0.0.1 dev vxlan0
+```
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2007-55-28.png)
+
+COM-1:
+Ta cấu hình bảng định tuyến cho COM-1 kết nối đến ROUTER-2 và COM-1 đến COM-2 qua VXLAN
+```
+ip route add 30.0.0.0/24 via 172.16.137.129 dev ens37
+ip route add 192.168.42.0/24 via 172.16.137.129 dev ens37
+```
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-12-48.png)
+
+COM-2:
+Ta cấu hình bảng định tuyến cho COM-2 kết nối đến ROUTER-1 qua VXLAN
+```
+ip route add 30.0.0.0/24 via 192.168.42.128 dev ens33
+ip route add 172.16.137.0/24 via 192.168.42.128 dev ens33
+```
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-13-14.png)
+
+Sau khi cấu hình ta có thể ping được từ COM-1 đến COM-2 qua VXLAN.
+Ping COM-2 (192.168.42.129)
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-02-03.png)
+`tcpdump -i vxlan0` trên Router1
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-02-14.png)
+`tcpdump -i vxlan0` trên Router2
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-02-22.png)
+
+Hoặc ta có thể SSH từ COM-2 về COM-1
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-04-00.png)
+`tcpdump -i vxlan0` trên Router1
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-05-16.png)
+`tcpdump -i vxlan0` trên Router2
+![](https://github.com/kidluc/NETWORKREPORT/blob/master/Screenshot%20from%202017-09-22%2008-05-32.png)
+
 
 ## 6. Giao thức ICMP
 ####  6.1 Lý Thuyết
